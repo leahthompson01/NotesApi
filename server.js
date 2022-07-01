@@ -61,7 +61,7 @@ mongoClient.connect(db_connectionString, {useUnifiedTopology: true  })
                 .catch(err => console.error(err))
         })
         app.delete('/notes',(req,res)=>{
-            notesCollection.deleteOne({task: req.body.task})
+            notesCollection.deleteOne({ _id: ObjectId(req.body._id)})
             .then(result =>{
                 console.log('deleted one from database')
                 res.json('ToDo deleted')
