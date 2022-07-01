@@ -7,8 +7,9 @@ const cors = require('cors')
 const mongoClient = require('mongodb').MongoClient
 const db_connectionString = process.env.connection_string
 //connecting to the database, using the useunifiedTopology returns a promise
-//so we can use .then and .catch
 app.use(cors())
+//so we can use .then and .catch
+
 mongoClient.connect(db_connectionString, {useUnifiedTopology: true  })
     .then(client =>{
         console.log('You have connected to the Database')
@@ -17,7 +18,7 @@ mongoClient.connect(db_connectionString, {useUnifiedTopology: true  })
         app.use(express.static('public'))
         app.use(express.urlencoded({ extended: true }))
         app.use(express.json())
-        app.get('/', (req,res)=>{
+        app.get('/', cors(corsOptions),(req,res)=>{
             res.send('Hello')
         })
         app.get('/notes', (req,res)=>{
@@ -44,8 +45,7 @@ mongoClient.connect(db_connectionString, {useUnifiedTopology: true  })
         app.put('/notes',(req,res)=>{
             notesCollection.find().toArray()
             .then(data =>{
-               filteredArr = data.filter(obj => obj.task === req.body.task || obj.description === req.body.description
-                )
+               filteredArr = data.filter(obj => obj._id === req.body._id)
                 console.log(filteredArr)
                 //rethink how to update entries to check for uniqueness
                 notesCollection.updateOne({task:filteredArr[0].task,description:filteredArr[0].description},{
