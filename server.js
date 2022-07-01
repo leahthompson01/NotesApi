@@ -35,14 +35,14 @@ mongoClient.connect(db_connectionString, {useUnifiedTopology: true  })
             notesCollection.insertOne({task:req.body.task,description:req.body.description})
             .then(result=> {
                 console.log('Succesfully added new item to database')
-                res.json('Added new task to database')
+                res.json(result)
         })
             .catch(err => console.error(err))
         })
         //put request is going to update our db
         //put request is currently not updating db, need to search for item in db that matches,
         // either the task or description and update the field that changed
-        let filteredArr
+
         app.put('/notes',(req,res)=>{
                 //rethink how to update entries to check for uniqueness
                 console.log(req.body)
@@ -61,7 +61,7 @@ mongoClient.connect(db_connectionString, {useUnifiedTopology: true  })
                 .catch(err => console.error(err))
         })
         app.delete('/notes',(req,res)=>{
-            notesCollection.deleteOne({ _id: ObjectId(req.body._id)})
+            notesCollection.deleteOne({_id: ObjectId(req.body._id)})
             .then(result =>{
                 console.log('deleted one from database')
                 res.json('ToDo deleted')
