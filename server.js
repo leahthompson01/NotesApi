@@ -6,8 +6,10 @@ dotenv.config()
 const cors = require('cors')
 const mongoClient = require('mongodb').MongoClient
 const db_connectionString = process.env.connection_string
+const ObjectId = require('mongodb').ObjectId;
 //connecting to the database, using the useunifiedTopology returns a promise
 app.use(cors())
+app.use(express.json())
 //so we can use .then and .catch
 
 mongoClient.connect(db_connectionString, {useUnifiedTopology: true  })
@@ -17,7 +19,6 @@ mongoClient.connect(db_connectionString, {useUnifiedTopology: true  })
         const notesCollection = db.collection('notes-info')
         app.use(express.static('public'))
         app.use(express.urlencoded({ extended: true }))
-        app.use(express.json())
         app.get('/',(req,res)=>{
             res.send('Hello')
         })
@@ -43,29 +44,21 @@ mongoClient.connect(db_connectionString, {useUnifiedTopology: true  })
         // either the task or description and update the field that changed
         let filteredArr
         app.put('/notes',(req,res)=>{
-            notesCollection.find().toArray()
-            .then(data =>{
-               filteredArr = data.filter(obj => obj._id === req.body._id)
-                console.log(filteredArr)
                 //rethink how to update entries to check for uniqueness
-                notesCollection.updateOne({task:filteredArr[0].task,description:filteredArr[0].description},{
+                console.log(req.body)
+                notesCollection.updateOne({ _id: ObjectId(req.body._id) },{
                     $set:{
                         task: req.body.task,
                         description: req.body.description
                     }
                 })
-            //task: eat more
-            //description:chicken
-            //task: eat less
-            //dewscription: chicken
-                .then(result =>{
+                //response here comes from MongoDB
+                .then(data =>{
                    console.log('updated task entry')
-                   res.json('Updated task in db')
+                   //this res comes from my put request
+                   res.json(data)
                 })
                 .catch(err => console.error(err))
-            })
-           
-            .catch(err => console.error(err))
         })
         app.delete('/notes',(req,res)=>{
             notesCollection.deleteOne({task: req.body.task})
