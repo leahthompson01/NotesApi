@@ -8,7 +8,7 @@ const mongoClient = require('mongodb').MongoClient
 const db_connectionString = process.env.connection_string
 //connecting to the database, using the useunifiedTopology returns a promise
 //so we can use .then and .catch
-app.use(cors)
+app.use(cors())
 mongoClient.connect(db_connectionString, {useUnifiedTopology: true  })
     .then(client =>{
         console.log('You have connected to the Database')
