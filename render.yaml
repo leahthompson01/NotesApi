@@ -8,7 +8,3 @@ services:
     dockerfilePath: Dockerfile.render
     plan: free # optional; defaults to starter
     numInstances: 1
-    envVars:
-      - key: connection_string # Imported from Heroku app
-        value: mongodb+srv://lele3397:DoNotShowThis99@cluster0.tjlunbh.mongodb.net/?retryWrites&#x3D;true&amp;w&#x3D;majority
-
